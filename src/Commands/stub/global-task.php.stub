@@ -6,6 +6,32 @@ use JobMetric\Flow\Contracts\TaskContract;
 
 class {{task}}GlobalTask extends TaskContract
 {
+    /**
+     * title of task
+     *
+     * validation: required
+     * @var string
+     */
+    protected string $title = "";
+
+    /**
+     * description of task
+     *
+     * validation: optional
+     * @var ?string
+     */
+    protected ?string $description = null;
+
+    /**
+     * fields of task
+     *
+     * validation: optional
+     * sample: sample in parent class(TaskContract)
+     *
+     * @var array
+     */
+    protected array $fields = [];
+
     public function handle()
     {
         // write code here

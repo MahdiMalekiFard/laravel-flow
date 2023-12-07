@@ -3,11 +3,11 @@
 use JobMetric\Flow\Contracts\DriverContract;
 use JobMetric\Flow\Facades\Flow;
 
-if(!function_exists('flowResolve')) {
+if (!function_exists('flowResolve')) {
     /**
      * Resolve the given flow instance by name.
      *
-     * @param  string  $driver
+     * @param string $driver
      *
      * @return DriverContract
      */
@@ -17,11 +17,11 @@ if(!function_exists('flowResolve')) {
     }
 }
 
-if(!function_exists('flowGetStatus')) {
+if (!function_exists('flowGetStatus')) {
     /**
      * Get the status of the given flow instance by name.
      *
-     * @param  string  $driver
+     * @param string $driver
      *
      * @return array
      */
@@ -30,3 +30,4 @@ if(!function_exists('flowGetStatus')) {
         return Flow::getStatus($driver);
     }
 }
+

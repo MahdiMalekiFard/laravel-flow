@@ -2,14 +2,22 @@
 
 namespace JobMetric\Flow\Http\Controllers;
 
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Resources\Json\JsonResource;
 use JobMetric\Flow\Facades\Flow as FlowFacade;
+use JobMetric\Flow\Facades\FlowTask as FlowTaskFacade;
+use JobMetric\Flow\Facades\FlowTask;
 use JobMetric\Flow\Http\Controllers\Controller as BaseFlowController;
 use JobMetric\Flow\Http\Requests\Flow\StoreFlowTaskRequest;
 use JobMetric\Flow\Http\Requests\Flow\UpdateFlowTaskRequest;
 use JobMetric\Flow\Http\Resources\FlowResource;
+use JobMetric\Flow\Http\Resources\FlowTaskDetailResource;
+use JobMetric\Flow\Http\Resources\FlowTaskDriversResource;
+use JobMetric\Flow\Http\Resources\FlowTaskResource;
 use JobMetric\Flow\Models\Flow;
+use JobMetric\Flow\Models\FlowTransition;
 
-class FlowController extends BaseFlowController
+class FlowTaskController extends BaseFlowController
 {
     /**
      * Display a listing of the resource.
@@ -22,15 +30,19 @@ class FlowController extends BaseFlowController
     /**
      * Store a newly created resource in storage.
      *
-     * @param StoreFlowTaskRequest $request
+     * @param Flow $flow
+     * @param FlowTransition $flowTransition
+     * @param StoreFlowTaskRequest $storeFlowTaskRequest
      *
-     * @return FlowResource
+     * @return FlowTaskResource
      */
-    public function store(StoreFlowTaskRequest $request): FlowResource
+    public function store(Flow $flow, FlowTransition $flowTransition, StoreFlowTaskRequest $storeFlowTaskRequest): FlowTaskResource
     {
-        return FlowResource::make(
-            FlowFacade::store(
-                $request->validated()
+        return FlowTaskResource::make(
+            FlowTaskFacade::store(
+                $flow->id,
+                $flowTransition->id,
+                $storeFlowTaskRequest->validated()
             )
         );
     }
@@ -50,7 +62,7 @@ class FlowController extends BaseFlowController
     /**
      * Update the specified resource in storage.
      *
-     * @param Flow                  $flow
+     * @param Flow $flow
      * @param UpdateFlowTaskRequest $request
      *
      * @return FlowResource
@@ -97,10 +109,39 @@ class FlowController extends BaseFlowController
      *
      * @return FlowResource
      */
-    public function forceDelete(Flow $flow): FlowResource
+    public function forceDelete(Flow $flow)
     {
         return FlowResource::make(
             FlowFacade::forceDelete($flow->id)
+        );
+    }
+
+    /**
+     * get all task driver
+     *
+     * @param Flow $flow
+     *
+     * @return AnonymousResourceCollection
+     */
+    public function drivers(Flow $flow): AnonymousResourceCollection
+    {
+        return FlowTaskDriversResource::collection(
+            FlowTask::drivers($flow->driver)
+        );
+    }
+
+    /**
+     * get details task driver
+     *
+     * @param string $flow_driver
+     * @param string $task_driver
+     *
+     * @return JsonResource
+     */
+    public function details(string $flow_driver, string $task_driver): JsonResource
+    {
+        return FlowTaskDetailResource::make(
+            FlowTask::details($flow_driver, $task_driver)
         );
     }
 }
